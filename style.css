@@ -1,0 +1,95 @@
+html {
+    height: 100%;
+}
+
+body {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #263238;
+    color: white;
+}
+
+section#main {
+    height: calc(100% - 220px);
+    width: 100%;
+    display: table;
+}
+
+div.inner {
+    /* width: 100%; */
+    display: table-cell;
+    vertical-align: middle;
+}
+
+p#status {
+    margin: 0 auto;
+    font-size: 60px;
+}
+
+p.timer {
+    margin: 0 auto;
+    font-size: 50px;
+}
+
+span#minutes, span#seconds {
+    font-size: 220px;
+}
+
+section#controller {
+    height: 176px;
+    font-size: 20px;
+}
+
+button {
+    display: inline-block;
+    padding: 0.5em 1em;
+    width: 120px;
+    font-size: 18px;
+    text-decoration: none;
+    color: #263238;
+    background: #FAFAFA;
+    border-bottom: solid 4px #E0E0E0;
+    border-radius: 3px;
+}
+
+button:active {
+    -webkit-transform: translateY(4px);
+    transform: translateY(4px);
+    border-bottom: none;
+}
+
+button:disabled {
+    color: #BDBDBD;
+    background: #E0E0E0;
+    border-bottom: solid 4px #9E9E9E;
+}
+
+table {
+    margin: 15px auto 19px;
+}
+
+td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+input {
+    width: 60px;
+    font-size: 20px;
+    text-align: right;
+}
+
+select {
+    font-size: 15px;
+}
+
+footer {
+    height: 44px;
+}
+
+p.copyright {
+    margin: 0px;
+	padding: 10px;
+}

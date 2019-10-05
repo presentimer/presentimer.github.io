@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <title>プレゼンタイマー</title>
+</head>
+<body>
+    <section id="main">
+        <div class="inner">
+            <p id="status">残り</p>
+            <p class="timer"><span id="minutes">00</span>分<span id="seconds">00</span>秒</p>
+        </div>
+    </section>
+    <section id="controller">
+        <button id="start">開始</button>&emsp;<button id="stop">停止</button>&emsp;<button id="reset">リセット</button>
+        <table>
+            <tr>
+                <td>予鈴１</td>
+                <td><input type="tel" maxlength="3" placeholder="0" id="min1">分</td>
+                <td>ベル
+                    <select id="bell1">
+                        <option value="0" selected>なし</option>
+                        <option value="1">１回</option>
+                        <option value="2">２回</option>
+                        <option value="3">３回</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>予鈴２</td>
+                <td><input type="tel" maxlength="3" placeholder="0" id="min2">分</td>
+                <td>ベル
+                    <select id="bell2">
+                        <option value="0">なし</option>
+                        <option value="1" selected>１回</option>
+                        <option value="2">２回</option>
+                        <option value="3">３回</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>発表終了</td>
+                <td><input type="tel" maxlength="3" placeholder="0" id="min3">分</td>
+                <td>ベル
+                    <select id="bell3">
+                        <option value="0">なし</option>
+                        <option value="1">１回</option>
+                        <option value="2" selected>２回</option>
+                        <option value="3">３回</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </section>
+    <footer>
+        <p class="copyright">©︎ 2019 Takuto Nakamura</p>
+    </footer>
+    <script type="text/javascript" src="./script.js"></script>
+</body>
+</html>
