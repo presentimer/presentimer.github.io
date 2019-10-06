@@ -28,7 +28,7 @@ p#status {
     font-size: 60px;
 }
 
-p.timer {
+p#timer {
     margin: 0 auto;
     font-size: 50px;
 }

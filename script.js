@@ -1,3 +1,4 @@
+const timerPar = document.getElementById("timer");
 const statusLbl = document.getElementById("status");
 const minutesLbl = document.getElementById("minutes");
 const secondsLbl = document.getElementById("seconds");
@@ -14,16 +15,16 @@ const min3Text = document.getElementById("min3");
 const bell3Sel = document.getElementById("bell3");
 const texts = [min1Text, min2Text, min3Text];
 const bells = [bell1Sel, bell2Sel, bell3Sel];
-let minutes = [0, 0, 10];
+let minutes = [0, 8, 10];
 let timer;
 let now = 0;
 
-// function spacePadding(num) {
-//     return num.toString().length < 2 ? "&ensp;" + num : num;
-// }
+function minusPadding(isMinus, num) {
+    return (isMinus ? "-" : "") + num.toString();
+}
 
 function zeroPadding(num) {
-    return ('00' + num).slice(-2);
+    return ("00" + num).slice(-2);
 }
 
 function setTimer() {
@@ -38,26 +39,40 @@ function setTimer() {
         }
     }
     now = minutes[2] * 60;
+    timerPar.style.color = "white";
     minutesLbl.innerText = minutes[2];
     secondsLbl.innerText = zeroPadding(0);
 }
 
 function coundDown() {
     now -= 1;
-    minutesLbl.innerText = parseInt(now / 60, 10);
-    secondsLbl.innerText = zeroPadding(now % 60);
+    timerPar.style.color = (now < 0) ? "#E64A19" : "white";
+    minutesLbl.innerText = minusPadding(now < 0, Math.abs(parseInt(now / 60, 10)));
+    secondsLbl.innerText = zeroPadding(Math.abs(now) % 60);
+
+    for (let i = 2; i >= 0; i--) {
+        if ((now == (minutes[2] - minutes[i]) * 60) && (bells[i].value != 0)) {
+            let bellSound = new Audio();
+            bellSound.src = "./sounds/bell" + bells[i].value + ".mp3";
+            bellSound.play();
+            break;
+        }
+    }
 }
 
 window.onload = function() {
     minutesLbl.innerHTML = minutes[2];
     secondsLbl.innerText = zeroPadding(0);
     stopBtn.disabled = true;
+    resetBtn.disabled = true;
+    min2Text.value = minutes[1];
     min3Text.value = minutes[2];
     now = minutes[2] * 60;
 
     startBtn.addEventListener("click", function() {
         this.disabled = true;
         stopBtn.disabled = false;
+        resetBtn.disabled = true;
         for(let i in texts) {
             texts[i].disabled = true
             bells[i].disabled = true
@@ -68,15 +83,20 @@ window.onload = function() {
     stopBtn.addEventListener("click", function() {
         this.disabled = true;
         startBtn.disabled = false;
+        resetBtn.disabled = false;
         for(let i in texts) {
-            texts[i].disabled = true
-            bells[i].disabled = true
+            texts[i].disabled = false
+            bells[i].disabled = false
         }
         clearInterval(timer);
     }, false);
 
     resetBtn.addEventListener("click", function() {
-
+        resetBtn.disabled = true;
+        now = minutes[2] * 60;
+        timerPar.style.color = "white";
+        minutesLbl.innerText = minutes[2];
+        secondsLbl.innerText = zeroPadding(0);
     }, false);
 
     for (let text of texts) {
