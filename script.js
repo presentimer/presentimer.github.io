@@ -70,6 +70,7 @@ window.onload = function() {
     now = minutes[2] * 60;
 
     startBtn.addEventListener("click", function() {
+        statusLbl.innerText = "残り";
         this.disabled = true;
         stopBtn.disabled = false;
         resetBtn.disabled = true;
@@ -81,6 +82,7 @@ window.onload = function() {
     }, false);
 
     stopBtn.addEventListener("click", function() {
+        statusLbl.innerText = "停止中";
         this.disabled = true;
         startBtn.disabled = false;
         resetBtn.disabled = false;
@@ -92,6 +94,7 @@ window.onload = function() {
     }, false);
 
     resetBtn.addEventListener("click", function() {
+        statusLbl.innerText = "残り";
         resetBtn.disabled = true;
         now = minutes[2] * 60;
         timerPar.style.color = "white";
