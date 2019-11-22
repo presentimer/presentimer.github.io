@@ -73,29 +73,6 @@ const call_bell = () => {
     console.log("ring!");
 }
 
-const call_bell2 = () => {
-    testCountBellBtn.innerHTML = "3";
-    const bell = new Audio();
-    bell.src = "sounds/bell1.mp3";
-    bell.volume = 0;
-    bell.play();
-    miniTimer = setInterval( myCountDown, 1000 );
-}
-
-const myCountDown = () => {
-    if (!checkCountDown) checkCountDown = 3; 
-    checkCountDown--;
-
-    testCountBellBtn.innerHTML = (checkCountDown == 0) ? "3カウント" : checkCountDown;
-    if (checkCountDown == 0){
-        const bell = new Audio();
-        bell.src = "sounds/bell1.mp3";
-        bell.play();
-        console.log("ring!!");
-        clearInterval(miniTimer);
-    }
-}
-
 window.onload = function() {
     minutesLbl.innerHTML = minutes[2];
     secondsLbl.innerText = zeroPadding(0);
@@ -114,6 +91,10 @@ window.onload = function() {
             texts[i].disabled = true
             bells[i].disabled = true
         }
+        const bell = new Audio();
+        bell.src = "sounds/bell1.mp3";
+        bell.volume = 0.0;
+        bell.play();
         timer = setInterval(coundDown, 1000);
     }, false);
 
@@ -138,12 +119,10 @@ window.onload = function() {
         secondsLbl.innerText = zeroPadding(0);
     }, false);
 
+    testBellBtn.addEventListener("click", call_bell, false);
+
 
     for (let text of texts) {
         text.addEventListener("input", setTimer, false);
     }
 }
-
-testBellBtn.addEventListener("click", call_bell, false);
-
-testCountBellBtn.addEventListener("click", call_bell2, false);
