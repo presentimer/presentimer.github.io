@@ -7,6 +7,7 @@ const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
 const resetBtn = document.getElementById("reset");
 const testBellBtn = document.getElementById("bell_call");
+const testCountBellBtn = document.getElementById("bell_call2");
 
 const min1Text = document.getElementById("min1");
 const bell1Sel = document.getElementById("bell1");
@@ -18,7 +19,10 @@ const texts = [min1Text, min2Text, min3Text];
 const bells = [bell1Sel, bell2Sel, bell3Sel];
 let minutes = [0, 8, 10];
 let timer;
+let miniTimer;
 let now = 0;
+
+let checkCountDown = null;
 
 function minusPadding(isMinus, num) {
     return (isMinus ? "-" : "") + num.toString();
@@ -62,11 +66,30 @@ function coundDown() {
     }
 }
 
-let call_bell = () => {
+const call_bell = () => {
     let bell = new Audio();
     bell.src = "sounds/bell1.mp3";
-    console.log(bell.src);
     bell.play();
+    console.log("ring!");
+}
+
+const call_bell2 = () => {
+    testCountBellBtn.innerHTML = "3";
+    miniTimer = setInterval( myCountDown, 1000 );
+}
+
+const myCountDown = () => {
+    if (!checkCountDown) checkCountDown = 3; 
+    checkCountDown--;
+
+    testCountBellBtn.innerHTML = (checkCountDown == 0) ? "3カウント" : checkCountDown;
+    if (checkCountDown == 0){
+        const bell = new Audio();
+        bell.src = "sounds/bell1.mp3";
+        bell.play();
+        console.log("ring!!");
+        clearInterval(miniTimer);
+    }
 }
 
 window.onload = function() {
@@ -118,3 +141,5 @@ window.onload = function() {
 }
 
 testBellBtn.addEventListener("click", call_bell, false);
+
+testCountBellBtn.addEventListener("click", call_bell2, false);
