@@ -75,6 +75,10 @@ const call_bell = () => {
 
 const call_bell2 = () => {
     testCountBellBtn.innerHTML = "3";
+    const bell = new Audio();
+    bell.src = "sounds/bell1.mp3";
+    bell.volume = 0;
+    bell.play();
     miniTimer = setInterval( myCountDown, 1000 );
 }
 
