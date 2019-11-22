@@ -62,10 +62,13 @@ function coundDown() {
     }
 }
 
-let call_bell = () => {
+const call_bell = () => {
     let bell = new Audio();
+    let debug_bell = new Audio();
     bell.src = "sounds/bell1.mp3";
+    debug_bell.src = "./sounds/bell1.mp3"
     console.log(bell.src);
+    console.log(debug_bell.src);
     bell.play();
 }
 
