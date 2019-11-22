@@ -6,6 +6,7 @@ const secondsLbl = document.getElementById("seconds");
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
 const resetBtn = document.getElementById("reset");
+const testBellBtn = document.getElementById("bell_call");
 
 const min1Text = document.getElementById("min1");
 const bell1Sel = document.getElementById("bell1");
@@ -54,10 +55,18 @@ function coundDown() {
         if ((now == (minutes[2] - minutes[i]) * 60) && (bells[i].value != 0)) {
             let bellSound = new Audio();
             bellSound.src = "./sounds/bell" + bells[i].value + ".mp3";
+            console.log(bellSound.src);
             bellSound.play();
             break;
         }
     }
+}
+
+let call_bell = () => {
+    let bell = new Audio();
+    bell.src = "sounds/bell1.mp3";
+    console.log(bell.src);
+    bell.play();
 }
 
 window.onload = function() {
@@ -102,8 +111,10 @@ window.onload = function() {
         secondsLbl.innerText = zeroPadding(0);
     }, false);
 
+
     for (let text of texts) {
         text.addEventListener("input", setTimer, false);
     }
-
 }
+
+testBellBtn.addEventListener("click", call_bell, false);
