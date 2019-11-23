@@ -33,6 +33,11 @@ p#timer {
     font-size: 50px;
 }
 
+p#elapsed_timer {
+    margin: 0 auto;
+    font-size: 16px;
+}
+
 span#minutes, span#seconds {
     font-size: 220px;
 }

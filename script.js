@@ -3,11 +3,13 @@ const statusLbl = document.getElementById("status");
 const minutesLbl = document.getElementById("minutes");
 const secondsLbl = document.getElementById("seconds");
 
+const elapsedMinutesLbl = document.getElementById("elapsed_minutes");
+const elapsedSecondsLbl = document.getElementById("elapsed_seconds");
+
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
 const resetBtn = document.getElementById("reset");
 const testBellBtn = document.getElementById("bell_call");
-const testCountBellBtn = document.getElementById("bell_call2");
 
 const min1Text = document.getElementById("min1");
 const bell1Sel = document.getElementById("bell1");
@@ -19,10 +21,8 @@ const texts = [min1Text, min2Text, min3Text];
 const bells = [bell1Sel, bell2Sel, bell3Sel];
 let minutes = [0, 8, 10];
 let timer;
-let miniTimer;
 let now = 0;
-
-let checkCountDown = null;
+let counter = 0;
 
 function minusPadding(isMinus, num) {
     return (isMinus ? "-" : "") + num.toString();
@@ -44,6 +44,7 @@ function setTimer() {
         }
     }
     now = minutes[2] * 60;
+
     timerPar.style.color = "white";
     minutesLbl.innerText = minutes[2];
     secondsLbl.innerText = zeroPadding(0);
@@ -54,6 +55,10 @@ function coundDown() {
     timerPar.style.color = (now < 0) ? "#E64A19" : "white";
     minutesLbl.innerText = minusPadding(now < 0, Math.abs(parseInt(now / 60, 10)));
     secondsLbl.innerText = zeroPadding(Math.abs(now) % 60);
+
+    counter++;
+    elapsedMinutesLbl.innerText = zeroPadding( Math.abs( parseInt(counter/ 60, 10) ) );
+    elapsedSecondsLbl.innerHTML = zeroPadding(Math.abs(counter) % 60);
 
     for (let i = 2; i >= 0; i--) {
         if ((now == (minutes[2] - minutes[i]) * 60) && (bells[i].value != 0)) {
@@ -117,6 +122,9 @@ window.onload = function() {
         timerPar.style.color = "white";
         minutesLbl.innerText = minutes[2];
         secondsLbl.innerText = zeroPadding(0);
+        counter = 0;
+        elapsedMinutesLbl.innerText = zeroPadding(0);
+        elapsedSecondsLbl.innerText = zeroPadding(0);
     }, false);
 
     testBellBtn.addEventListener("click", call_bell, false);
