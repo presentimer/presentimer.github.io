@@ -6,6 +6,8 @@ const secondsLbl = document.getElementById("seconds");
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
 const resetBtn = document.getElementById("reset");
+const testBellBtn = document.getElementById("bell_call");
+const testCountBellBtn = document.getElementById("bell_call2");
 
 const min1Text = document.getElementById("min1");
 const bell1Sel = document.getElementById("bell1");
@@ -17,7 +19,10 @@ const texts = [min1Text, min2Text, min3Text];
 const bells = [bell1Sel, bell2Sel, bell3Sel];
 let minutes = [0, 8, 10];
 let timer;
+let miniTimer;
 let now = 0;
+
+let checkCountDown = null;
 
 function minusPadding(isMinus, num) {
     return (isMinus ? "-" : "") + num.toString();
@@ -54,10 +59,18 @@ function coundDown() {
         if ((now == (minutes[2] - minutes[i]) * 60) && (bells[i].value != 0)) {
             let bellSound = new Audio();
             bellSound.src = "./sounds/bell" + bells[i].value + ".mp3";
+            console.log(bellSound.src);
             bellSound.play();
             break;
         }
     }
+}
+
+const call_bell = () => {
+    let bell = new Audio();
+    bell.src = "sounds/bell1.mp3";
+    bell.play();
+    console.log("ring!");
 }
 
 window.onload = function() {
@@ -78,6 +91,10 @@ window.onload = function() {
             texts[i].disabled = true
             bells[i].disabled = true
         }
+        const bell = new Audio();
+        bell.src = "sounds/bell1.mp3";
+        bell.volume = 0.0;
+        bell.play();
         timer = setInterval(coundDown, 1000);
     }, false);
 
@@ -102,8 +119,10 @@ window.onload = function() {
         secondsLbl.innerText = zeroPadding(0);
     }, false);
 
+    testBellBtn.addEventListener("click", call_bell, false);
+
+
     for (let text of texts) {
         text.addEventListener("input", setTimer, false);
     }
-
 }
