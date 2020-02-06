@@ -10,6 +10,7 @@ const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
 const resetBtn = document.getElementById("reset");
 const testBellBtn = document.getElementById("bell_call");
+const wrapBtn = document.getElementById("wrap");
 
 const min1Text = document.getElementById("min1");
 const bell1Sel = document.getElementById("bell1");
@@ -23,6 +24,9 @@ let minutes = [0, 8, 10];
 let timer;
 let now = 0;
 let counter = 0;
+let wrap_time = 0;
+let wrap_list = [];
+let wrap_list_dom = document.getElementById("wrap_list");
 
 function minusPadding(isMinus, num) {
     return (isMinus ? "-" : "") + num.toString();
@@ -78,6 +82,29 @@ const call_bell = () => {
     console.log("ring!");
 }
 
+
+const add_wrap = () => {
+    if (startBtn.disabled == false) return;
+
+    const _minute = zeroPadding( Math.abs( parseInt( counter/ 60, 10 ) ) );
+    const _second = zeroPadding( Math.abs( counter ) % 60 );
+    const wrap_minute = zeroPadding( Math.abs( parseInt( wrap_time/ 60, 10 ) ) );
+    const wrap_second = zeroPadding( Math.abs( wrap_time ) % 60 );
+    wrap_time = 0
+
+    const wrap = `${wrap_minute}:${wrap_second}（ ${_minute}:${_second}）`
+    
+    const li = document.createElement('li');
+    const attr = document.createAttribute('class');
+    attr.value = "wrap_item";
+    li.setAttributeNode( attr );
+    li.appendChild( document.createTextNode(wrap) );
+
+    wrap_list_dom.appendChild(li);
+    wrap_list.push(wrap);
+}
+
+
 window.onload = function() {
     minutesLbl.innerHTML = minutes[2];
     secondsLbl.innerText = zeroPadding(0);
@@ -125,10 +152,18 @@ window.onload = function() {
         counter = 0;
         elapsedMinutesLbl.innerText = zeroPadding(0);
         elapsedSecondsLbl.innerText = zeroPadding(0);
+        
+        // ラップタイムの初期化，およびラップタイムリストの配列，DOMリストを削除
+        wrap_time = 0;
+        wrap_list = []
+        while (wrap_list_dom.firstChild) {
+            wrap_list_dom.removeChild(wrap_list_dom.firstChild);
+        }
     }, false);
 
     testBellBtn.addEventListener("click", call_bell, false);
 
+    wrapBtn.addEventListener("click", add_wrap, false);
 
     for (let text of texts) {
         text.addEventListener("input", setTimer, false);
