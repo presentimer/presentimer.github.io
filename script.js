@@ -60,6 +60,7 @@ function coundDown() {
     minutesLbl.innerText = minusPadding(now < 0, Math.abs(parseInt(now / 60, 10)));
     secondsLbl.innerText = zeroPadding(Math.abs(now) % 60);
 
+    wrap_time++;
     counter++;
     elapsedMinutesLbl.innerText = zeroPadding( Math.abs( parseInt(counter/ 60, 10) ) );
     elapsedSecondsLbl.innerHTML = zeroPadding(Math.abs(counter) % 60);
@@ -110,6 +111,7 @@ window.onload = function() {
     secondsLbl.innerText = zeroPadding(0);
     stopBtn.disabled = true;
     resetBtn.disabled = true;
+    wrapBtn.disabled = true;
     min2Text.value = minutes[1];
     min3Text.value = minutes[2];
     now = minutes[2] * 60;
@@ -119,6 +121,7 @@ window.onload = function() {
         this.disabled = true;
         stopBtn.disabled = false;
         resetBtn.disabled = true;
+        wrapBtn.disabled = false;
         for(let i in texts) {
             texts[i].disabled = true
             bells[i].disabled = true
@@ -135,6 +138,7 @@ window.onload = function() {
         this.disabled = true;
         startBtn.disabled = false;
         resetBtn.disabled = false;
+        wrapBtn.disabled = true
         for(let i in texts) {
             texts[i].disabled = false
             bells[i].disabled = false
