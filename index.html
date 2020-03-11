@@ -13,63 +13,49 @@
                 <span id="minutes">00</span>分
                 <span id="seconds">00</span>秒
             </p>
-            
+
             <p id="elapsed_timer">
                 経過時間
                 <span id="elapsed_minutes">00</span>分
                 <span id="elapsed_seconds">00</span>秒</p>
-            <p>
+            </p>
         </div>
     </section>
     <section id="controller">
-        <button id="start">開始</button>&emsp;<button id="stop">停止</button>&emsp;<button id="reset">リセット</button>&emsp;<button id="bell_call">手動用鈴</button>
+        <button id="start">開始</button>&emsp;<button id="stop">停止</button>&emsp;<button id="reset">リセット</button>&emsp;<button id="bell">手動用鈴</button>
         <table>
             <tr>
-                <td>予鈴１</td>
-                <td><input type="tel" maxlength="3" placeholder="0" id="min1">分</td>
-                <td>ベル
-                    <select id="bell1">
-                        <option value="0" selected>なし</option>
-                        <option value="1">１回</option>
-                        <option value="2">２回</option>
-                        <option value="3">３回</option>
-                    </select>
-                </td>
+                <td>発表時間</td>
+                <td class="limit"><input type="tel" maxlength="3" placeholder="0" id="limitField">分</td>
             </tr>
             <tr>
-                <td>予鈴２</td>
-                <td><input type="tel" maxlength="3" placeholder="0" id="min2">分</td>
-                <td>ベル
-                    <select id="bell2">
-                        <option value="0">なし</option>
-                        <option value="1" selected>１回</option>
-                        <option value="2">２回</option>
-                        <option value="3">３回</option>
-                    </select>
-                </td>
+                <td>ベル１回</td>
+                <td><input type="tel" maxlength="3" placeholder="0" id="minutesPass1" name="1">分経過時</td>
+                <td>or</td>
+                <td>残り<input type="tel" maxlength="3" placeholder="0" id="minutesRest1">分</td>
             </tr>
             <tr>
-                <td>発表終了</td>
-                <td><input type="tel" maxlength="3" placeholder="0" id="min3">分</td>
-                <td>ベル
-                    <select id="bell3">
-                        <option value="0">なし</option>
-                        <option value="1">１回</option>
-                        <option value="2" selected>２回</option>
-                        <option value="3">３回</option>
-                    </select>
-                </td>
+                <td>ベル２回</td>
+                <td><input type="tel" maxlength="3" placeholder="0" id="minutesPass2" name="2">分経過時</td>
+                <td>or</td>
+                <td>残り<input type="tel" maxlength="3" placeholder="0" id="minutesRest2">分</td>
+            </tr>
+            <tr>
+                <td>ベル３回</td>
+                <td><input type="tel" maxlength="3" placeholder="0" id="minutesPass3" name="3">分経過時</td>
+                <td>or</td>
+                <td>残り<input type="tel" maxlength="3" placeholder="0" id="minutesRest3">分</td>
             </tr>
         </table>
     </section>
-    <section id="wrap_wrapper">
+    <section id="wrapWrapper">
         <h1>ラップタイム</h1>
-        <ol id="wrap_list">
+        <ol id="wrapList">
         </ol>
         <button id="wrap">ラップ</button>
     </section>
     <footer>
-        <p class="copyright">©︎ 2019 Takuto Nakamura</p>
+        <p class="copyright">©︎ 2019-2020 Takuto Nakamura<br>©︎ 2020 tkkrr</p>
     </footer>
     <script type="text/javascript" src="./script.js"></script>
 </body>
