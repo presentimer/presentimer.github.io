@@ -32,199 +32,211 @@ let wrapList = [];
 let wrapListDom = document.getElementById("wrapList");
 
 function minusPadding(isMinus, num) {
-    return (isMinus ? "-" : "") + num.toString();
+  return (isMinus ? "-" : "") + num.toString();
 }
 
 function zeroPadding(num) {
-    return ("00" + num).slice(-2);
+  return ("00" + num).slice(-2);
 }
 
 // 発表時間のフィールドが更新されたとき発火
 function updateLimit() {
-    if (limitField.value) {
-        if (limitField.value.match(/^\d+$/g)) {
-            limitTime = parseInt(limitField.value);
-        }
-        limitField.value = limitTime;
-    } else {
-        limitTime = 0;
+  if (limitField.value) {
+    if (limitField.value.match(/^\d+$/g)) {
+      limitTime = parseInt(limitField.value);
     }
-    updatePass();
-    resetTimer();
+    limitField.value = limitTime;
+  } else {
+    limitTime = 0;
+  }
+  updatePass();
+  resetTimer();
 }
 
 // 経過時のフィールドが更新されたとき発火
 function updatePass() {
-    for (let i = 0; i < 3; i++) {
-        if (minPassArray[i].value) {
-            if (minPassArray[i].value.match(/^\d+$/g)) {
-                minutes[i] = parseInt(minPassArray[i].value);
-            }
-            minPassArray[i].value = minutes[i];
-            minRestArray[i].value = limitTime - minutes[i];
-        } else {
-            minutes[i] = 0;
-            minRestArray[i].value = "";
-        }
+  for (let i = 0; i < 3; i++) {
+    if (minPassArray[i].value) {
+      if (minPassArray[i].value.match(/^\d+$/g)) {
+        minutes[i] = parseInt(minPassArray[i].value);
+      }
+      minPassArray[i].value = minutes[i];
+      minRestArray[i].value = limitTime - minutes[i];
+    } else {
+      minutes[i] = 0;
+      minRestArray[i].value = "";
     }
+  }
 }
 
 // 残りのフィールドが更新されたとき発火
 function updateRest() {
-    for (let i = 0; i < 3; i++) {
-        if (minRestArray[i].value) {
-            if (minRestArray[i].value.match(/^\d+$/g)) {
-                minutes[i] = limitTime - parseInt(minRestArray[i].value);
-            }
-            minPassArray[i].value = minutes[i];
-            minRestArray[i].value = limitTime - minutes[i];
-        } else {
-            minutes[i] = 0;
-            minPassArray[i].value = "";
-        }
+  for (let i = 0; i < 3; i++) {
+    if (minRestArray[i].value) {
+      if (minRestArray[i].value.match(/^\d+$/g)) {
+        minutes[i] = limitTime - parseInt(minRestArray[i].value);
+      }
+      minPassArray[i].value = minutes[i];
+      minRestArray[i].value = limitTime - minutes[i];
+    } else {
+      minutes[i] = 0;
+      minPassArray[i].value = "";
     }
+  }
 }
 
 function resetTimer() {
-    passTime = 0;
-    passBackup = 0;
-    wrapTime = 0;
-    timerPar.style.color = "white";
-    minutesLbl.innerText = limitTime;
-    secondsLbl.innerText = zeroPadding(0);
-    elapsedMinutesLbl.innerText = zeroPadding(0);
-    elapsedSecondsLbl.innerText = zeroPadding(0);
+  passTime = 0;
+  passBackup = 0;
+  wrapTime = 0;
+  timerPar.style.color = "white";
+  minutesLbl.innerText = limitTime;
+  secondsLbl.innerText = zeroPadding(0);
+  elapsedMinutesLbl.innerText = zeroPadding(0);
+  elapsedSecondsLbl.innerText = zeroPadding(0);
 }
 
 // seconds タイマー開始からの経過時間の取得
 // バックアップは一時停止したときの対応用
 function getPassTime() {
-    const currentTime = (new Date()).getTime(); // milli seconds
-    return passBackup + Math.floor((currentTime - startTime) / 1000);
+  const currentTime = new Date().getTime(); // milli seconds
+  return passBackup + Math.floor((currentTime - startTime) / 1000);
 }
 
 function countDown() {
-    const _passTime = getPassTime();
+  const _passTime = getPassTime();
 
-    if (_passTime != passTime) {
-        for (let i = 2; i >= 0; i--) {
-            if ((minutes[i].value != 0) && (_passTime == minutes[i] * 60)) {
-                const bellSound = new Audio();
-                bellSound.src = "./sounds/bell" + minPassArray[i].name + ".mp3";
-                bellSound.play();
-                break;
-            }
-        }
+  if (_passTime != passTime) {
+    for (let i = 2; i >= 0; i--) {
+      if (minutes[i].value != 0 && _passTime == minutes[i] * 60) {
+        const bellSound = new Audio();
+        bellSound.src = "./sounds/bell" + minPassArray[i].name + ".mp3";
+        bellSound.play();
+        break;
+      }
     }
+  }
 
-    passTime = _passTime;
-    const restTime = limitTime * 60 - passTime; // seconds 残り時間
-    timerPar.style.color = (restTime < 0) ? "#E64A19" : "white";
-    minutesLbl.innerText = minusPadding(restTime < 0, Math.abs(parseInt(restTime / 60, 10)));
-    secondsLbl.innerText = zeroPadding(Math.abs(restTime) % 60);
-    elapsedMinutesLbl.innerText = zeroPadding(Math.abs(parseInt(passTime / 60, 10)));
-    elapsedSecondsLbl.innerText = zeroPadding(Math.abs(passTime) % 60);
+  passTime = _passTime;
+  const restTime = limitTime * 60 - passTime; // seconds 残り時間
+  timerPar.style.color = restTime < 0 ? "#E64A19" : "white";
+  minutesLbl.innerText = minusPadding(restTime < 0, Math.abs(parseInt(restTime / 60, 10)));
+  secondsLbl.innerText = zeroPadding(Math.abs(restTime) % 60);
+  elapsedMinutesLbl.innerText = zeroPadding(Math.abs(parseInt(passTime / 60, 10)));
+  elapsedSecondsLbl.innerText = zeroPadding(Math.abs(passTime) % 60);
 }
 
 function callBell() {
-    const bell = new Audio();
-    bell.src = "sounds/bell1.mp3";
-    bell.play();
+  const bell = new Audio();
+  bell.src = "sounds/bell1.mp3";
+  bell.play();
 }
 
 function callSilentBell() {
-    const bell = new Audio();
-    bell.src = "sounds/bell1.mp3";
-    bell.volume = 0.0;
-    bell.play();
+  const bell = new Audio();
+  bell.src = "sounds/bell1.mp3";
+  bell.volume = 0.0;
+  bell.play();
 }
 
 function addWrap() {
-    if (startBtn.disabled == false) return;
+  if (startBtn.disabled == false) return;
 
-    const wrapTime = passTime - wrapBackup; // ラップ
-    const wrap_minute = zeroPadding(Math.abs(parseInt(wrapTime / 60, 10)));
-    const wrap_second = zeroPadding(Math.abs(wrapTime) % 60);
-    const _minute = elapsedMinutesLbl.innerText
-    const _second = elapsedSecondsLbl.innerText
-    wrapBackup = passTime;
+  const wrapTime = passTime - wrapBackup; // ラップ
+  const wrap_minute = zeroPadding(Math.abs(parseInt(wrapTime / 60, 10)));
+  const wrap_second = zeroPadding(Math.abs(wrapTime) % 60);
+  const _minute = elapsedMinutesLbl.innerText;
+  const _second = elapsedSecondsLbl.innerText;
+  wrapBackup = passTime;
 
-    const wrap = `${wrap_minute}:${wrap_second}（${_minute}:${_second}）`;
-    const li = document.createElement('li');
-    const attr = document.createAttribute('class');
-    attr.value = "wrap_item";
-    li.setAttributeNode(attr);
-    li.appendChild(document.createTextNode(wrap));
+  const wrap = `${wrap_minute}:${wrap_second}（${_minute}:${_second}）`;
+  const li = document.createElement("li");
+  const attr = document.createAttribute("class");
+  attr.value = "wrap_item";
+  li.setAttributeNode(attr);
+  li.appendChild(document.createTextNode(wrap));
 
-    wrapListDom.appendChild(li);
-    wrapList.push(wrap);
+  wrapListDom.appendChild(li);
+  wrapList.push(wrap);
 }
 
-window.onload = function() {
-    minutesLbl.innerHTML = limitTime;
-    secondsLbl.innerText = zeroPadding(0);
-    stopBtn.disabled = true;
-    resetBtn.disabled = true;
-    wrapBtn.disabled = true;
-    limitField.value = limitTime;
-    minPass1.value = minutes[0];
-    minRest1.value = limitTime - minutes[0];
-    minPass2.value = minutes[1];
-    minRest2.value = limitTime - minutes[1];
+window.onload = function () {
+  minutesLbl.innerHTML = limitTime;
+  secondsLbl.innerText = zeroPadding(0);
+  stopBtn.disabled = true;
+  resetBtn.disabled = true;
+  wrapBtn.disabled = true;
+  limitField.value = limitTime;
+  minPass1.value = minutes[0];
+  minRest1.value = limitTime - minutes[0];
+  minPass2.value = minutes[1];
+  minRest2.value = limitTime - minutes[1];
 
-    startBtn.addEventListener("click", function() {
-        statusLbl.innerText = "残り";
-        this.disabled = true;
-        stopBtn.disabled = false;
-        resetBtn.disabled = true;
-        wrapBtn.disabled = false;
-        limitField.disabled = true;
-        for (let i = 0; i < 3; i++) {
-            minPassArray[i].disabled = true;
-            minRestArray[i].disabled = true;
-        }
-        callSilentBell();
-        startTime = (new Date()).getTime();
-        timer = setInterval(countDown, 100);
-    }, false);
+  startBtn.addEventListener(
+    "click",
+    function () {
+      statusLbl.innerText = "残り";
+      this.disabled = true;
+      stopBtn.disabled = false;
+      resetBtn.disabled = true;
+      wrapBtn.disabled = false;
+      limitField.disabled = true;
+      for (let i = 0; i < 3; i++) {
+        minPassArray[i].disabled = true;
+        minRestArray[i].disabled = true;
+      }
+      callSilentBell();
+      startTime = new Date().getTime();
+      timer = setInterval(countDown, 100);
+    },
+    false
+  );
 
-    stopBtn.addEventListener("click", function() {
-        clearInterval(timer);
-        passBackup = passTime;
-        statusLbl.innerText = "停止中";
-        this.disabled = true;
-        startBtn.disabled = false;
-        resetBtn.disabled = false;
-        wrapBtn.disabled = true
-        limitField.disabled = false;
-        for (let i = 0; i < 3; i++) {
-            minPassArray[i].disabled = false;
-            minRestArray[i].disabled = false;
-        }
-    }, false);
+  stopBtn.addEventListener(
+    "click",
+    function () {
+      clearInterval(timer);
+      passBackup = passTime;
+      statusLbl.innerText = "停止中";
+      this.disabled = true;
+      startBtn.disabled = false;
+      resetBtn.disabled = false;
+      wrapBtn.disabled = true;
+      limitField.disabled = false;
+      for (let i = 0; i < 3; i++) {
+        minPassArray[i].disabled = false;
+        minRestArray[i].disabled = false;
+      }
+    },
+    false
+  );
 
-    resetBtn.addEventListener("click", function() {
-        resetTimer();
-        statusLbl.innerText = "残り";
-        resetBtn.disabled = true;
+  resetBtn.addEventListener(
+    "click",
+    function () {
+      resetTimer();
+      statusLbl.innerText = "残り";
+      resetBtn.disabled = true;
 
-        // ラップタイムの初期化，およびラップタイムリストの配列，DOMリストを削除
-        wrapTime = 0;
-        wrapList = [];
-        while (wrapListDom.firstChild) {
-            wrapListDom.removeChild(wrapListDom.firstChild);
-        }
-    }, false);
+      // ラップタイムの初期化，およびラップタイムリストの配列，DOMリストを削除
+      wrapTime = 0;
+      wrapList = [];
+      while (wrapListDom.firstChild) {
+        wrapListDom.removeChild(wrapListDom.firstChild);
+      }
+    },
+    false
+  );
 
-    bellBtn.addEventListener("click", callBell, false);
+  bellBtn.addEventListener("click", callBell, false);
 
-    wrapBtn.addEventListener("click", addWrap, false);
+  wrapBtn.addEventListener("click", addWrap, false);
 
-    limitField.addEventListener("input", updateLimit, false);
-    for (let minPass of minPassArray) {
-        minPass.addEventListener("input", updatePass, false);
-    }
-    for (let minRest of minRestArray) {
-        minRest.addEventListener("input", updateRest, false);
-    }
-}
+  limitField.addEventListener("input", updateLimit, false);
+  for (let minPass of minPassArray) {
+    minPass.addEventListener("input", updatePass, false);
+  }
+  for (let minRest of minRestArray) {
+    minRest.addEventListener("input", updateRest, false);
+  }
+};
