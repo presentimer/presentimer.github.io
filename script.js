@@ -21,6 +21,7 @@ const minPass3 = document.getElementById("minutesPass3");
 const minRest3 = document.getElementById("minutesRest3");
 const minPassArray = [minPass1, minPass2, minPass3];
 const minRestArray = [minRest1, minRest2, minRest3];
+
 let minutes = [8, 10, 0]; // minutes
 let timer;
 let startTime = 0; // milli seconds 開始した時間
@@ -31,61 +32,28 @@ let wrapBackup = 0; // seconds ラップ用のバックアップ
 let wrapList = [];
 let wrapListDom = document.getElementById("wrapList");
 
-function minusPadding(isMinus, num) {
+const minusPadding = (isMinus, num) => {
   return (isMinus ? "-" : "") + num.toString();
-}
+};
 
-function zeroPadding(num) {
+const zeroPadding = (num) => {
   return ("00" + num).slice(-2);
-}
+};
 
-// 発表時間のフィールドが更新されたとき発火
-function updateLimit() {
-  if (limitField.value) {
-    if (limitField.value.match(/^\d+$/g)) {
-      limitTime = parseInt(limitField.value);
-    }
-    limitField.value = limitTime;
-  } else {
-    limitTime = 0;
-  }
-  updatePass();
-  resetTimer();
-}
+const setupUI = () => {
+  minutesLbl.innerHTML = limitTime;
+  secondsLbl.innerText = zeroPadding(0);
+  stopBtn.disabled = true;
+  resetBtn.disabled = true;
+  wrapBtn.disabled = true;
+  limitField.value = limitTime;
+  minPass1.value = minutes[0];
+  minRest1.value = limitTime - minutes[0];
+  minPass2.value = minutes[1];
+  minRest2.value = limitTime - minutes[1];
+};
 
-// 経過時のフィールドが更新されたとき発火
-function updatePass() {
-  for (let i = 0; i < 3; i++) {
-    if (minPassArray[i].value) {
-      if (minPassArray[i].value.match(/^\d+$/g)) {
-        minutes[i] = parseInt(minPassArray[i].value);
-      }
-      minPassArray[i].value = minutes[i];
-      minRestArray[i].value = limitTime - minutes[i];
-    } else {
-      minutes[i] = 0;
-      minRestArray[i].value = "";
-    }
-  }
-}
-
-// 残りのフィールドが更新されたとき発火
-function updateRest() {
-  for (let i = 0; i < 3; i++) {
-    if (minRestArray[i].value) {
-      if (minRestArray[i].value.match(/^\d+$/g)) {
-        minutes[i] = limitTime - parseInt(minRestArray[i].value);
-      }
-      minPassArray[i].value = minutes[i];
-      minRestArray[i].value = limitTime - minutes[i];
-    } else {
-      minutes[i] = 0;
-      minPassArray[i].value = "";
-    }
-  }
-}
-
-function resetTimer() {
+const setupTimer = () => {
   passTime = 0;
   passBackup = 0;
   wrapTime = 0;
@@ -94,16 +62,23 @@ function resetTimer() {
   secondsLbl.innerText = zeroPadding(0);
   elapsedMinutesLbl.innerText = zeroPadding(0);
   elapsedSecondsLbl.innerText = zeroPadding(0);
-}
+};
+
+const callSilentBell = () => {
+  const bell = new Audio();
+  bell.src = "sounds/bell1.mp3";
+  bell.volume = 0.0;
+  bell.play();
+};
 
 // seconds タイマー開始からの経過時間の取得
 // バックアップは一時停止したときの対応用
-function getPassTime() {
+const getPassTime = () => {
   const currentTime = new Date().getTime(); // milli seconds
   return passBackup + Math.floor((currentTime - startTime) / 1000);
-}
+};
 
-function countDown() {
+const countDown = () => {
   const _passTime = getPassTime();
 
   if (_passTime != passTime) {
@@ -124,22 +99,59 @@ function countDown() {
   secondsLbl.innerText = zeroPadding(Math.abs(restTime) % 60);
   elapsedMinutesLbl.innerText = zeroPadding(Math.abs(parseInt(passTime / 60, 10)));
   elapsedSecondsLbl.innerText = zeroPadding(Math.abs(passTime) % 60);
-}
+};
 
-function callBell() {
+const startTimer = () => {
+  statusLbl.innerText = "残り";
+  startBtn.disabled = true;
+  stopBtn.disabled = false;
+  resetBtn.disabled = true;
+  wrapBtn.disabled = false;
+  limitField.disabled = true;
+  for (let i = 0; i < 3; i++) {
+    minPassArray[i].disabled = true;
+    minRestArray[i].disabled = true;
+  }
+  callSilentBell();
+  startTime = new Date().getTime();
+  timer = setInterval(countDown, 100);
+};
+
+const stopTimer = () => {
+  clearInterval(timer);
+  passBackup = passTime;
+  statusLbl.innerText = "停止中";
+  stopBtn.disabled = true;
+  startBtn.disabled = false;
+  resetBtn.disabled = false;
+  wrapBtn.disabled = true;
+  limitField.disabled = false;
+  for (let i = 0; i < 3; i++) {
+    minPassArray[i].disabled = false;
+    minRestArray[i].disabled = false;
+  }
+};
+
+const resetTimer = () => {
+  setupTimer();
+  statusLbl.innerText = "残り";
+  resetBtn.disabled = true;
+
+  // ラップタイムの初期化，およびラップタイムリストの配列，DOMリストを削除
+  wrapTime = 0;
+  wrapList = [];
+  while (wrapListDom.firstChild) {
+    wrapListDom.removeChild(wrapListDom.firstChild);
+  }
+};
+
+const callBell = () => {
   const bell = new Audio();
   bell.src = "sounds/bell1.mp3";
   bell.play();
-}
+};
 
-function callSilentBell() {
-  const bell = new Audio();
-  bell.src = "sounds/bell1.mp3";
-  bell.volume = 0.0;
-  bell.play();
-}
-
-function addWrap() {
+const addWrap = () => {
   if (startBtn.disabled == false) return;
 
   const wrapTime = passTime - wrapBackup; // ラップ
@@ -158,85 +170,66 @@ function addWrap() {
 
   wrapListDom.appendChild(li);
   wrapList.push(wrap);
-}
+};
 
-window.onload = function () {
-  minutesLbl.innerHTML = limitTime;
-  secondsLbl.innerText = zeroPadding(0);
-  stopBtn.disabled = true;
-  resetBtn.disabled = true;
-  wrapBtn.disabled = true;
-  limitField.value = limitTime;
-  minPass1.value = minutes[0];
-  minRest1.value = limitTime - minutes[0];
-  minPass2.value = minutes[1];
-  minRest2.value = limitTime - minutes[1];
-
-  startBtn.addEventListener(
-    "click",
-    function () {
-      statusLbl.innerText = "残り";
-      this.disabled = true;
-      stopBtn.disabled = false;
-      resetBtn.disabled = true;
-      wrapBtn.disabled = false;
-      limitField.disabled = true;
-      for (let i = 0; i < 3; i++) {
-        minPassArray[i].disabled = true;
-        minRestArray[i].disabled = true;
+// 経過時のフィールドが更新されたとき発火
+const updatePass = () => {
+  for (let i = 0; i < 3; i++) {
+    if (minPassArray[i].value) {
+      if (minPassArray[i].value.match(/^\d+$/g)) {
+        minutes[i] = parseInt(minPassArray[i].value);
       }
-      callSilentBell();
-      startTime = new Date().getTime();
-      timer = setInterval(countDown, 100);
-    },
-    false
-  );
+      minPassArray[i].value = minutes[i];
+      minRestArray[i].value = limitTime - minutes[i];
+    } else {
+      minutes[i] = 0;
+      minRestArray[i].value = "";
+    }
+  }
+};
 
-  stopBtn.addEventListener(
-    "click",
-    function () {
-      clearInterval(timer);
-      passBackup = passTime;
-      statusLbl.innerText = "停止中";
-      this.disabled = true;
-      startBtn.disabled = false;
-      resetBtn.disabled = false;
-      wrapBtn.disabled = true;
-      limitField.disabled = false;
-      for (let i = 0; i < 3; i++) {
-        minPassArray[i].disabled = false;
-        minRestArray[i].disabled = false;
+// 残りのフィールドが更新されたとき発火
+const updateRest = () => {
+  for (let i = 0; i < 3; i++) {
+    if (minRestArray[i].value) {
+      if (minRestArray[i].value.match(/^\d+$/g)) {
+        minutes[i] = limitTime - parseInt(minRestArray[i].value);
       }
-    },
-    false
-  );
+      minPassArray[i].value = minutes[i];
+      minRestArray[i].value = limitTime - minutes[i];
+    } else {
+      minutes[i] = 0;
+      minPassArray[i].value = "";
+    }
+  }
+};
 
-  resetBtn.addEventListener(
-    "click",
-    function () {
-      resetTimer();
-      statusLbl.innerText = "残り";
-      resetBtn.disabled = true;
+// 発表時間のフィールドが更新されたとき発火
+const updateLimit = () => {
+  if (limitField.value) {
+    if (limitField.value.match(/^\d+$/g)) {
+      limitTime = parseInt(limitField.value);
+    }
+    limitField.value = limitTime;
+  } else {
+    limitTime = 0;
+  }
+  updatePass();
+  setupTimer();
+};
 
-      // ラップタイムの初期化，およびラップタイムリストの配列，DOMリストを削除
-      wrapTime = 0;
-      wrapList = [];
-      while (wrapListDom.firstChild) {
-        wrapListDom.removeChild(wrapListDom.firstChild);
-      }
-    },
-    false
-  );
-
+window.addEventListener("load", () => {
+  setupUI();
+  startBtn.addEventListener("click", startTimer, false);
+  stopBtn.addEventListener("click", stopTimer, false);
+  resetBtn.addEventListener("click", resetTimer, false);
   bellBtn.addEventListener("click", callBell, false);
-
   wrapBtn.addEventListener("click", addWrap, false);
-
-  limitField.addEventListener("input", updateLimit, false);
   for (let minPass of minPassArray) {
     minPass.addEventListener("input", updatePass, false);
   }
   for (let minRest of minRestArray) {
     minRest.addEventListener("input", updateRest, false);
   }
-};
+  limitField.addEventListener("input", updateLimit, false);
+});
