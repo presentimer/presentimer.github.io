@@ -40,6 +40,12 @@ const zeroPadding = (num) => {
   return ("00" + num).slice(-2);
 };
 
+const toHalfNumber = (text) => {
+  return text.replace(/[０-９]/g, (s) => {
+    return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
+  });
+};
+
 const setupUI = () => {
   minutesLbl.innerHTML = limitTime;
   secondsLbl.innerText = zeroPadding(0);
@@ -175,9 +181,13 @@ const addWrap = () => {
 // 経過時のフィールドが更新されたとき発火
 const updatePass = () => {
   for (let i = 0; i < 3; i++) {
-    if (minPassArray[i].value) {
-      if (minPassArray[i].value.match(/^\d+$/g)) {
-        minutes[i] = parseInt(minPassArray[i].value);
+    let value = minPassArray[i].value;
+    if (value) {
+      value = toHalfNumber(value);
+      if (value.match(/^-?\d+$/g)) {
+        minutes[i] = parseInt(value);
+      } else if (value == "-") {
+        minutes[i] = 0;
       }
       minPassArray[i].value = minutes[i];
       minRestArray[i].value = limitTime - minutes[i];
@@ -191,9 +201,13 @@ const updatePass = () => {
 // 残りのフィールドが更新されたとき発火
 const updateRest = () => {
   for (let i = 0; i < 3; i++) {
-    if (minRestArray[i].value) {
-      if (minRestArray[i].value.match(/^\d+$/g)) {
-        minutes[i] = limitTime - parseInt(minRestArray[i].value);
+    let value = minRestArray[i].value;
+    if (value) {
+      value = toHalfNumber(value);
+      if (value.match(/^-?\d+$/g)) {
+        minutes[i] = limitTime - parseInt(value);
+      } else if (value == "-") {
+        minutes[i] = limitTime;
       }
       minPassArray[i].value = minutes[i];
       minRestArray[i].value = limitTime - minutes[i];
@@ -206,9 +220,11 @@ const updateRest = () => {
 
 // 発表時間のフィールドが更新されたとき発火
 const updateLimit = () => {
-  if (limitField.value) {
-    if (limitField.value.match(/^\d+$/g)) {
-      limitTime = parseInt(limitField.value);
+  let value = limitField.value;
+  if (value) {
+    value = toHalfNumber(value);
+    if (value.match(/^\d+$/g)) {
+      limitTime = parseInt(value);
     }
     limitField.value = limitTime;
   } else {
