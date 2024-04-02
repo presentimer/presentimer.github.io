@@ -22,15 +22,31 @@ const minRest3 = document.getElementById("minutesRest3");
 const minPassArray = [minPass1, minPass2, minPass3];
 const minRestArray = [minRest1, minRest2, minRest3];
 
-let minutes = [8, 10, 0]; // minutes
+let minutes = [0, 0, 0]; // minutes
 let timer;
 let startTime = 0; // milli seconds 開始した時間
-let limitTime = 10; // minutes 発表時間（制限時間）
+let limitTime = 0; // minutes 発表時間（制限時間）
 let passTime = 0; // seconds 経過時間
 let passBackup = 0; // seconds 経過時間用のバックアップ
 let wrapBackup = 0; // seconds ラップ用のバックアップ
 let wrapList = [];
 let wrapListDom = document.getElementById("wrapList");
+
+const getQueries = () => {
+  const params = new URL(decodeURIComponent(document.location.href)).searchParams;
+  return {
+    limit: params.get("limit") || 10,
+    bell1: params.get("bell1") || 8,
+    bell2: params.get("bell2") || 10,
+    bell3: params.get("bell3") || 0,
+  };
+};
+
+const setupValues = () => {
+  const queries = getQueries();
+  minutes = [queries.bell1, queries.bell2, queries.bell3];
+  limitTime = queries.limit;
+};
 
 const minusPadding = (isMinus, num) => {
   return (isMinus ? "-" : "") + num.toString();
@@ -53,10 +69,18 @@ const setupUI = () => {
   resetBtn.disabled = true;
   wrapBtn.disabled = true;
   limitField.value = limitTime;
-  minPass1.value = minutes[0];
-  minRest1.value = limitTime - minutes[0];
-  minPass2.value = minutes[1];
-  minRest2.value = limitTime - minutes[1];
+  if (minutes[0] !== 0) {
+    minPass1.value = minutes[0];
+    minRest1.value = limitTime - minutes[0];
+  }
+  if (minutes[1] !== 0) {
+    minPass2.value = minutes[1];
+    minRest2.value = limitTime - minutes[1];
+  }
+  if (minutes[2] !== 0) {
+    minPass3.value = minutes[2];
+    minRest3.value = limitTime - minutes[2];
+  }
 };
 
 const setupTimer = () => {
@@ -89,7 +113,7 @@ const countDown = () => {
 
   if (_passTime != passTime) {
     for (let i = 2; i >= 0; i--) {
-      if (minutes[i].value != 0 && _passTime == minutes[i] * 60) {
+      if (minutes[i] > 0 && _passTime == minutes[i] * 60) {
         const bellSound = new Audio();
         bellSound.src = "./sounds/bell" + minPassArray[i].name + ".mp3";
         bellSound.play();
@@ -235,6 +259,7 @@ const updateLimit = () => {
 };
 
 window.addEventListener("load", () => {
+  setupValues();
   setupUI();
   startBtn.addEventListener("click", startTimer, false);
   stopBtn.addEventListener("click", stopTimer, false);
