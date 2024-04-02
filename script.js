@@ -32,13 +32,18 @@ let wrapBackup = 0; // seconds ラップ用のバックアップ
 let wrapList = [];
 let wrapListDom = document.getElementById("wrapList");
 
+const getValue = (rawValue, defaultValue) => {
+  const number = parseInt(rawValue);
+  return isNaN(number) ? defaultValue : number;
+};
+
 const getQueries = () => {
-  const params = new URL(decodeURIComponent(document.location.href)).searchParams;
+  const params = new URLSearchParams(window.location.search);
   return {
-    limit: params.get("limit") || 10,
-    bell1: params.get("bell1") || 8,
-    bell2: params.get("bell2") || 10,
-    bell3: params.get("bell3") || 0,
+    limit: getValue(params.get("limit"), 10),
+    bell1: getValue(params.get("bell1"), 8),
+    bell2: getValue(params.get("bell2"), 10),
+    bell3: getValue(params.get("bell3"), 0),
   };
 };
 
@@ -46,6 +51,17 @@ const setupValues = () => {
   const queries = getQueries();
   minutes = [queries.bell1, queries.bell2, queries.bell3];
   limitTime = queries.limit;
+};
+
+const setQueries = () => {
+  const queries = {
+    limit: limitTime,
+    bell1: minutes[0],
+    bell2: minutes[1],
+    bell3: minutes[2],
+  };
+  const params = new URLSearchParams(queries);
+  history.replaceState(null, "", `?${params.toString()}`);
 };
 
 const minusPadding = (isMinus, num) => {
@@ -202,7 +218,7 @@ const addWrap = () => {
   wrapList.push(wrap);
 };
 
-// 経過時のフィールドが更新されたとき発火
+// 経過のフィールドが更新されたとき発火
 const updatePass = () => {
   for (let i = 0; i < 3; i++) {
     let value = minPassArray[i].value;
@@ -220,6 +236,7 @@ const updatePass = () => {
       minRestArray[i].value = "";
     }
   }
+  setQueries();
 };
 
 // 残りのフィールドが更新されたとき発火
@@ -240,6 +257,7 @@ const updateRest = () => {
       minPassArray[i].value = "";
     }
   }
+  setQueries();
 };
 
 // 発表時間のフィールドが更新されたとき発火
