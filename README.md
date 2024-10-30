@@ -1,2 +1,3 @@
 # presentimer.github.io
-研究発表用のタイマー
+
+研究発表用のシンプルなタイマー
