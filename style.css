@@ -9,6 +9,7 @@ body {
   height: 100%;
   background-color: #263238;
   color: white;
+  font-family: system-ui, sans-serif;
 }
 
 section#main {
