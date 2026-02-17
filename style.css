@@ -9,10 +9,11 @@ body {
   height: 100%;
   background-color: #263238;
   color: white;
+  font-family: system-ui, sans-serif;
 }
 
 section#main {
-  height: calc(100% - 280px);
+  height: calc(100% - 300px);
   width: 100%;
   display: table;
 }
@@ -44,7 +45,7 @@ span#seconds {
 }
 
 section#controller {
-  height: 210px;
+  height: 230px;
   font-size: 20px;
 }
 
@@ -97,7 +98,7 @@ section#wrapWrapper {
   top: 0;
   right: 0;
   height: 75vh;
-  width: 181px;
+  width: 205px;
   padding-right: 24px;
 }
 
